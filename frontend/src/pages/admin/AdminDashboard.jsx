@@ -27,10 +27,22 @@ export function AdminDashboard() {
   }
 
   const cards = [
-    { label: "Tong tai khoan", value: stats.totalAccounts },
-    { label: "So tran da luu diem", value: stats.totalScores },
-    { label: "So review", value: stats.totalReviews },
-    { label: "Game dang bat", value: stats.enabledGames },
+    {
+      label: "Tong so nguoi dung",
+      value: stats.totalUsers || 0,
+    },
+    {
+      label: "Tong so tro choi",
+      value: stats.totalGames || 0,
+    },
+    {
+      label: "Tong so lan choi",
+      value: stats.totalPlays || 0,
+    },
+    {
+      label: "Nguoi dung hoat dong",
+      value: stats.activeUsers || 0,
+    },
   ];
 
   return (
