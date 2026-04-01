@@ -1,5 +1,24 @@
 const { FriendshipModel } = require("../models/FriendshipModel");
-const { normalizeLimit, normalizePage, paginate } = require("../utils/helpers");
+const { UserModel } = require("../models/UserModel");
+const {
+	normalizeLimit,
+	normalizePage,
+	paginate,
+	sanitizeUser,
+} = require("../utils/helpers");
+
+async function expandFriendship(friendship, currentUserId) {
+	const friendId =
+		friendship.requesterId === Number(currentUserId)
+			? friendship.receiverId
+			: friendship.requesterId;
+	const friend = await UserModel.findById(friendId);
+
+	return {
+		...friendship,
+		friend: sanitizeUser(friend),
+	};
+}
 
 const friendController = {
 	async getFriendsList(req, res) {
@@ -8,8 +27,17 @@ const friendController = {
 		const pendingPage = normalizePage(req.query.pendingPage, 1);
 		const pendingLimit = normalizeLimit(req.query.pendingLimit, 4, 20);
 
-		const friends = await FriendshipModel.getFriends(req.user.id);
-		const pending = await FriendshipModel.getPending(req.user.id);
+		const friends = await Promise.all(
+			(await FriendshipModel.getFriends(req.user.id)).map((item) =>
+				expandFriendship(item, req.user.id),
+			),
+		);
+
+		const pending = await Promise.all(
+			(await FriendshipModel.getPending(req.user.id)).map((item) =>
+				expandFriendship(item, req.user.id),
+			),
+		);
 
 		const friendsPayload = paginate(friends, friendsPage, friendsLimit);
 		const pendingPayload = paginate(pending, pendingPage, pendingLimit);
@@ -31,6 +59,11 @@ const friendController = {
 				.json({ message: "friendId and action are required" });
 		}
 
+		const targetUser = await UserModel.findById(friendId);
+		if (!targetUser) {
+			return res.status(404).json({ message: "Target user not found" });
+		}
+
 		if (Number(friendId) === req.user.id) {
 			return res.status(400).json({ message: "Cannot friend yourself" });
 		}
@@ -40,7 +73,6 @@ const friendController = {
 				req.user.id,
 				friendId,
 			);
-
 			if (existing) {
 				return res
 					.status(409)
@@ -51,10 +83,9 @@ const friendController = {
 				req.user.id,
 				friendId,
 			);
-
 			return res.status(201).json({
 				message: "Friend request sent",
-				friendship,
+				friendship: await expandFriendship(friendship, req.user.id),
 			});
 		}
 
@@ -63,7 +94,6 @@ const friendController = {
 				req.user.id,
 				friendId,
 			);
-
 			if (!friendship) {
 				return res
 					.status(404)
@@ -72,7 +102,7 @@ const friendController = {
 
 			return res.json({
 				message: "Friend request accepted",
-				friendship,
+				friendship: await expandFriendship(friendship, req.user.id),
 			});
 		}
 
