@@ -77,27 +77,24 @@ export function GamePage() {
           const stateData = await gameService.loadState(numericGameId);
           if (active) {
             setSavedState(stateData.state);
-            setScore(stateData.state?.metadata?.score || 0);
-            setSeconds(stateData.state?.timeLeft || 0);
-            setStatus("Da tai save gan nhat.");
           }
         } catch (err) {
-          if (active && err.response?.status !== 404) {
-            setToast(err.response?.data?.message || "Khong tai duoc save");
-          }
+          console.error("Failed to load saved state:", err);
+        }
+
+        if (active) {
+          setLoading(false);
         }
       } catch (err) {
         if (active) {
-          setToast(err.response?.data?.message || "Khong tai duoc game");
-        }
-      } finally {
-        if (active) {
+          console.error("Failed to bootstrap game:", err);
           setLoading(false);
         }
       }
     }
 
     bootstrap();
+
     return () => {
       active = false;
     };
