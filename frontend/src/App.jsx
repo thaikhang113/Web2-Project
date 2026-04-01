@@ -10,9 +10,7 @@ function App() {
 
   useEffect(() => {
     hydrate();
-  }, [hydrate]);
-
-  return (
+  }, []);
     <ThemeProvider>
       <BrowserRouter>
         <AppRoutes />
