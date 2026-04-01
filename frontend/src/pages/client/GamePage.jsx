@@ -41,26 +41,26 @@ export function GamePage() {
   const [status, setStatus] = useState("Khoi tao van moi...");
   const [seconds, setSeconds] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [helpOpen, setHelpOpen] = useState(false);
-  const [toast, setToast] = useState("");
-  const [controls, setControls] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [toast, setToast] = useState("");
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: "" });
+  const [controls, setControls] = useState({});
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
 
     async function bootstrap() {
-      setLoading(true);
       try {
-        const [catalog, reviewData] = await Promise.all([
+        const [catalogData, reviewData] = await Promise.all([
           gameService.getCatalog(),
           gameService.getReviews(numericGameId).catch(() => ({ reviews: [] })),
         ]);
 
-        const foundGame =
-          catalog.games.find((item) => item.id === numericGameId) ||
-          catalog.games[0] || {
+        const foundGame = catalogData.games.find(
+          (item) => item.id === numericGameId,
+        ) ||
+          catalogData.games[0] || {
             id: numericGameId,
             name: GAME_META[numericGameId]?.title || "Mini Game",
             description: GAME_META[numericGameId]?.instructions,
@@ -166,12 +166,16 @@ export function GamePage() {
   if (!game.isEnabled) {
     return (
       <section className="hero-panel space-y-5 p-8">
-        <div className="chip w-fit bg-[var(--surface)] text-[var(--text)]">Game tam tat</div>
+        <div className="chip w-fit bg-[var(--surface)] text-[var(--text)]">
+          Game tam tat
+        </div>
         <div>
-          <h1 className="font-display text-5xl text-[var(--text)]">{game.name}</h1>
+          <h1 className="font-display text-5xl text-[var(--text)]">
+            {game.name}
+          </h1>
           <p className="mt-4 max-w-2xl text-[var(--muted)]">
-            Game nay hien dang duoc admin tam khoa hoac bao tri. Ban co the quay lai lobby
-            de chon tro khac.
+            Game nay hien dang duoc admin tam khoa hoac bao tri. Ban co the quay
+            lai lobby de chon tro khac.
           </p>
         </div>
         <Link
@@ -184,7 +188,8 @@ export function GamePage() {
     );
   }
 
-  const instructions = GAME_META[numericGameId]?.instructions || game.description;
+  const instructions =
+    GAME_META[numericGameId]?.instructions || game.description;
 
   return (
     <div className="space-y-6">
@@ -194,8 +199,12 @@ export function GamePage() {
             <div className="chip w-fit bg-[var(--accent-soft)] text-[var(--text)]">
               {GAME_META[numericGameId]?.shortcut || "GAME"}
             </div>
-            <h1 className="mt-4 font-display text-5xl text-[var(--text)]">{game.name}</h1>
-            <p className="mt-4 max-w-2xl text-[var(--muted)]">{game.description}</p>
+            <h1 className="mt-4 font-display text-5xl text-[var(--text)]">
+              {game.name}
+            </h1>
+            <p className="mt-4 max-w-2xl text-[var(--muted)]">
+              {game.description}
+            </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <GameTimer seconds={seconds} />
@@ -204,7 +213,11 @@ export function GamePage() {
         </div>
       </section>
 
-      {toast ? <div className="surface rounded-[24px] px-5 py-4 text-sm text-[var(--muted)]">{toast}</div> : null}
+      {toast ? (
+        <div className="surface rounded-[24px] px-5 py-4 text-sm text-[var(--muted)]">
+          {toast}
+        </div>
+      ) : null}
 
       <section className="grid gap-6 xl:grid-cols-[1.4fr,0.6fr]">
         <div className="surface rounded-[32px] p-6">
@@ -230,7 +243,9 @@ export function GamePage() {
             }}
           />
           <div className="surface rounded-[28px] p-5">
-            <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">Progress</p>
+            <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">
+              Progress
+            </p>
             <div className="mt-4 space-y-3">
               <button
                 type="button"
@@ -255,14 +270,20 @@ export function GamePage() {
 
       <section className="grid gap-6 xl:grid-cols-[0.95fr,1.05fr]">
         <form onSubmit={submitReview} className="surface rounded-[30px] p-6">
-          <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">Review</p>
-          <h2 className="mt-2 font-display text-3xl text-[var(--text)]">Danh gia game</h2>
+          <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">
+            Review
+          </p>
+          <h2 className="mt-2 font-display text-3xl text-[var(--text)]">
+            Danh gia game
+          </h2>
           <div className="mt-5 flex gap-2">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
                 key={value}
                 type="button"
-                onClick={() => setReviewForm((current) => ({ ...current, rating: value }))}
+                onClick={() =>
+                  setReviewForm((current) => ({ ...current, rating: value }))
+                }
                 className={`rounded-full p-2 ${reviewForm.rating >= value ? "text-[var(--warning)]" : "text-[var(--muted)]"}`}
               >
                 <Star size={22} fill="currentColor" />
@@ -273,7 +294,10 @@ export function GamePage() {
             rows="5"
             value={reviewForm.comment}
             onChange={(event) =>
-              setReviewForm((current) => ({ ...current, comment: event.target.value }))
+              setReviewForm((current) => ({
+                ...current,
+                comment: event.target.value,
+              }))
             }
             placeholder="Comment ngan cho game..."
             className="mt-4 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3 outline-none"
@@ -287,19 +311,34 @@ export function GamePage() {
         </form>
 
         <div className="surface rounded-[30px] p-6">
-          <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">Reviews moi</p>
-          <h2 className="mt-2 font-display text-3xl text-[var(--text)]">Phan hoi nguoi choi</h2>
+          <p className="text-sm uppercase tracking-[0.24em] text-[var(--muted)]">
+            Reviews moi
+          </p>
+          <h2 className="mt-2 font-display text-3xl text-[var(--text)]">
+            Phan hoi nguoi choi
+          </h2>
           <div className="mt-5 space-y-4">
             {reviews.map((review) => (
-              <article key={review.id} className="rounded-[22px] border border-[var(--line)] p-4">
+              <article
+                key={review.id}
+                className="rounded-[22px] border border-[var(--line)] p-4"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="font-semibold text-[var(--text)]">{review.user?.username}</p>
-                    <p className="text-sm text-[var(--muted)]">{formatDate(review.createdAt)}</p>
+                    <p className="font-semibold text-[var(--text)]">
+                      {review.user?.username}
+                    </p>
+                    <p className="text-sm text-[var(--muted)]">
+                      {formatDate(review.createdAt)}
+                    </p>
                   </div>
-                  <p className="text-sm font-semibold text-[var(--warning)]">{review.rating}/5</p>
+                  <p className="text-sm font-semibold text-[var(--warning)]">
+                    {review.rating}/5
+                  </p>
                 </div>
-                <p className="mt-3 text-[var(--muted)]">{review.comment || "Khong co noi dung."}</p>
+                <p className="mt-3 text-[var(--muted)]">
+                  {review.comment || "Khong co noi dung."}
+                </p>
               </article>
             ))}
           </div>
