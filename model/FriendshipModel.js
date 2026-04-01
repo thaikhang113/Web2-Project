@@ -1,32 +1,26 @@
 const { db } = require("../config/db");
 const { mapFriendship } = require("../utils/mappers");
 
-const FriendshipModel = {
-	async findFriendship(userId, friendId) {
-		const row = await db("friendships")
-			.where((builder) => {
-				builder
-					.where({
-						requester_id: Number(userId),
-						receiver_id: Number(friendId),
-					})
-					.orWhere({
-						requester_id: Number(friendId),
-						receiver_id: Number(userId),
-					});
-			})
-			.first();
-		return mapFriendship(row);
-	},
-
-	async requestFriend(userId, friendId) {
-		const [row] = await db("friendships")
-			.insert({
+const pairCondition = (query, userId, friendId) =>
+	query.where((builder) => {
+		builder
+			.where({
 				requester_id: Number(userId),
 				receiver_id: Number(friendId),
-				status: "pending",
 			})
-			.returning("*");
+			.orWhere({
+				requester_id: Number(friendId),
+				receiver_id: Number(userId),
+			});
+	});
+
+const FriendshipModel = {
+	async findFriendship(userId, friendId) {
+		const row = await pairCondition(
+			db("friendships"),
+			userId,
+			friendId,
+		).first();
 		return mapFriendship(row);
 	},
 
