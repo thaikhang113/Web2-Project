@@ -50,8 +50,8 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<ClientLayout />}>
           <Route path="/home" element={<HomePage />} />
-          <Route path="/game/:gameId" element={<GamePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/game/:id" element={<GamePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/messages" element={<MessagesPage />} />
