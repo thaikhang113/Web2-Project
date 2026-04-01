@@ -1,136 +1,124 @@
-function mapUser(row) {
-	if (!row) {
-		return null;
-	}
+const toUser = (data) => {
+	if (!data) return null;
 
 	return {
-		id: row.id,
-		username: row.username,
-		email: row.email,
-		passwordHash: row.password_hash,
-		role: row.role,
-		avatar: row.avatar,
-		bio: row.bio,
-		createdAt: row.created_at,
-		updatedAt: row.updated_at,
+		id: data.id,
+		username: data.username,
+		email: data.email,
+		passwordHash: data.password_hash,
+		role: data.role,
+		avatar: data.avatar,
+		bio: data.bio,
+		createdAt: data.created_at,
+		updatedAt: data.updated_at,
 	};
-}
+};
 
-function mapGame(row) {
-	if (!row) {
-		return null;
-	} else
-		return {
-			id: row.id,
-			name: row.name,
-			slug: row.slug,
-			description: row.description,
-			boardSize: row.board_size,
-			isEnabled: row.is_enabled,
-			accent: row.accent,
-			config: row.config || {},
-			createdAt: row.created_at,
-			updatedAt: row.updated_at,
-		};
-}
-
-function mapGameState(row) {
-	if (!row) {
-		return null;
-	} else
-		return {
-			id: row.id,
-			userId: row.user_id,
-			gameId: row.game_id,
-			board: row.board || [],
-			timeLeft: row.time_left,
-			currentTurn: row.current_turn,
-			metadata: row.metadata || {},
-			savedAt: row.saved_at,
-		};
-}
-
-function mapScore(row) {
-	if (!row) {
-		return null;
-	}
+const toGame = (data) => {
+	if (!data) return null;
 
 	return {
-		id: row.id,
-		userId: row.user_id,
-		gameId: row.game_id,
-		score: row.score,
-		duration: row.duration,
-		playedAt: row.played_at,
+		id: data.id,
+		name: data.name,
+		slug: data.slug,
+		description: data.description,
+		boardSize: data.board_size,
+		isEnabled: data.is_enabled,
+		accent: data.accent,
+		config: data.config ?? {},
+		createdAt: data.created_at,
+		updatedAt: data.updated_at,
 	};
-}
+};
 
-function mapFriendship(row) {
-	if (!row) {
-		return null;
-	}
-	return {
-		id: row.id,
-		requesterId: row.requester_id,
-		receiverId: row.receiver_id,
-		status: row.status,
-		createdAt: row.created_at,
-		updatedAt: row.updated_at,
-	};
-}
-
-function mapMessage(row) {
-	if (!row) {
-		return null;
-	}
-	return {
-		id: row.id,
-		senderId: row.sender_id,
-		receiverId: row.receiver_id,
-		content: row.content,
-		createdAt: row.created_at,
-	};
-}
-
-function mapReview(row) {
-	if (!row) {
-		return null;
-	}
+const toGameState = (data) => {
+	if (!data) return null;
 
 	return {
-		id: row.id,
-		userId: row.user_id,
-		gameId: row.game_id,
-		rating: row.rating,
-		comment: row.comment,
-		createdAt: row.created_at,
-		updatedAt: row.updated_at,
+		id: data.id,
+		userId: data.user_id,
+		gameId: data.game_id,
+		board: data.board ?? [],
+		timeLeft: data.time_left,
+		currentTurn: data.current_turn,
+		metadata: data.metadata ?? {},
+		savedAt: data.saved_at,
 	};
-}
+};
 
-function mapAchievement(row) {
-	if (!row) {
-		return null;
-	}
+const toScore = (data) => {
+	if (!data) return null;
 
 	return {
-		id: row.id,
-		name: row.name,
-		description: row.description,
-		icon: row.icon,
-		conditionType: row.condition_type,
-		conditionValue: row.condition_value,
-		createdAt: row.created_at,
+		id: data.id,
+		userId: data.user_id,
+		gameId: data.game_id,
+		score: data.score,
+		duration: data.duration,
+		playedAt: data.played_at,
 	};
-}
+};
+
+const toFriendship = (data) => {
+	if (!data) return null;
+
+	return {
+		id: data.id,
+		requesterId: data.requester_id,
+		receiverId: data.receiver_id,
+		status: data.status,
+		createdAt: data.created_at,
+		updatedAt: data.updated_at,
+	};
+};
+
+const toMessage = (data) => {
+	if (!data) return null;
+
+	return {
+		id: data.id,
+		senderId: data.sender_id,
+		receiverId: data.receiver_id,
+		content: data.content,
+		createdAt: data.created_at,
+	};
+};
+
+const toReview = (data) => {
+	if (!data) return null;
+
+	return {
+		id: data.id,
+		userId: data.user_id,
+		gameId: data.game_id,
+		rating: data.rating,
+		comment: data.comment,
+		createdAt: data.created_at,
+		updatedAt: data.updated_at,
+	};
+};
+
+const toAchievement = (data) => {
+	if (!data) return null;
+
+	return {
+		id: data.id,
+		name: data.name,
+		description: data.description,
+		icon: data.icon,
+		conditionType: data.condition_type,
+		conditionValue: data.condition_value,
+		createdAt: data.created_at,
+	};
+};
 
 module.exports = {
-	mapAchievement,
-	mapFriendship,
-	mapGame,
-	mapGameState,
-	mapMessage,
-	mapReview,
-	mapScore,
-	mapUser,
+	toAchievement,
+	toFriendship,
+	toGame,
+	toGameState,
+	toMessage,
+	toReview,
+	toScore,
+	toUser,
 };
