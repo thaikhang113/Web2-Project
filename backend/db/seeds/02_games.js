@@ -1,0 +1,78 @@
+exports.seed = async function seed(knex) {
+  await knex("games").insert([
+    {
+      id: 1,
+      name: "Caro 5",
+      slug: "caro5",
+      description: "Dat 5 quan lien tiep de danh bai may.",
+      board_size: 15,
+      is_enabled: true,
+      accent: "#ef4444",
+      config: JSON.stringify({ winLength: 5, mode: "pve" }),
+    },
+    {
+      id: 2,
+      name: "Caro 4",
+      slug: "caro4",
+      description: "Dat 4 quan lien tiep tren bang nho gon.",
+      board_size: 7,
+      is_enabled: true,
+      accent: "#f97316",
+      config: JSON.stringify({ winLength: 4, mode: "pve" }),
+    },
+    {
+      id: 3,
+      name: "Tic Tac Toe",
+      slug: "tictactoe",
+      description: "Ban co 3x3 co dien va nhanh gon.",
+      board_size: 3,
+      is_enabled: true,
+      accent: "#22c55e",
+      config: JSON.stringify({ winLength: 3, mode: "pve" }),
+    },
+    {
+      id: 4,
+      name: "Snake",
+      slug: "snake",
+      description: "Dieu khien ran an moi va tranh tu can minh.",
+      board_size: 12,
+      is_enabled: true,
+      accent: "#06b6d4",
+      config: JSON.stringify({ speed: 220 }),
+    },
+    {
+      id: 5,
+      name: "Match 3",
+      slug: "match3",
+      description: "Xoa cum mau va tao combo nhu candy rush.",
+      board_size: 8,
+      is_enabled: true,
+      accent: "#8b5cf6",
+      config: JSON.stringify({ minCluster: 3 }),
+    },
+    {
+      id: 6,
+      name: "Memory Match",
+      slug: "memory",
+      description: "Lat the va ghi nho vi tri cap hinh.",
+      board_size: 4,
+      is_enabled: true,
+      accent: "#eab308",
+      config: JSON.stringify({ pairs: 8 }),
+    },
+    {
+      id: 7,
+      name: "Free Draw",
+      slug: "freedraw",
+      description: "Bang ve tu do dang pixel art.",
+      board_size: 12,
+      is_enabled: true,
+      accent: "#ec4899",
+      config: JSON.stringify({ palette: 6 }),
+    },
+  ]);
+
+  await knex.raw(
+    "select setval(pg_get_serial_sequence('games', 'id'), (select coalesce(max(id), 1) from games), true)",
+  );
+};
